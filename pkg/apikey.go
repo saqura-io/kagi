@@ -4,6 +4,7 @@ import (
 	"crypto/rand"
 	"encoding/hex"
 	"fmt"
+	"github.com/saqura-io/kagi/config"
 	"hash/crc32"
 	"strings"
 )
@@ -26,7 +27,7 @@ func CalculateChecksum(data []byte) []byte {
 
 // GenerateAPIKey generates an API key with a checksum
 func GenerateAPIKey() string {
-	identifier := "sqra"
+	identifier := config.Get("API_KEY_PREFIX", "sqra")
 	secret := make([]byte, secretLength)
 	_, err := rand.Read(secret)
 	if err != nil {
@@ -43,7 +44,7 @@ func GenerateAPIKey() string {
 // ValidateAPIKey validates the API key by checking the checksum
 func ValidateAPIKey(apiKey string) bool {
 	parts := strings.Split(apiKey, "_")
-	if len(parts) != 3 || parts[0] != "sqra" {
+	if len(parts) != 3 || parts[0] != config.Get("API_KEY_PREFIX", "sqra") {
 		return false
 	}
 
